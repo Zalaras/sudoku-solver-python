@@ -159,13 +159,28 @@ def back_tracing_alg(puzzle_info, preset_list):
 				print('Cannot be solved')
 				break
 
+def print_puzzle(puzzle_info):
+	for x, row in enumerate(puzzle_info):
+		for y, cell in enumerate(row):
+			if y == 3 or y == 6:
+				print('|', end='')
+			if y == 2 or y == 5:
+				print(cell, end='')
+			else:
+				print(cell, ' ', end='')
+		print('')
+		if x == 2 or x == 5:
+			print('-'*23)
+
 preset_list = []
 #Read info from csv
 puzzle_info = read_puzzle('Puzzle1.csv', preset_list)
 #Make sure puzzle has info from reader
 if puzzle_info:
+	print('Unsolved')
+	print_puzzle(puzzle_info)
 	#Run file thorugh backtracing alg
 	back_tracing_alg(puzzle_info, preset_list)
 	#Output solved file
-	for row in puzzle_info:
-		print(row)
+	print('\nSolved')
+	print_puzzle(puzzle_info)
