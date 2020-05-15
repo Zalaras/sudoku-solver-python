@@ -184,3 +184,4 @@ if puzzle_info:
 	#Output solved file
 	print('\nSolved')
 	print_puzzle(puzzle_info)
+	
