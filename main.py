@@ -9,14 +9,30 @@ def read_puzzle(filename, preset_list):
 		for row in reader:
 			puzzle_info.append(row)
 
+	#Check Sudoku format 9x9
+	for x, row in enumerate(puzzle_info):
+		for y, cell in enumerate(row):
+			if x > 8 or y > 8:
+				print('Too many rows or columns in file')
+				return None
+
 	#Convert to ints and save the coordinates list of the preset numbers
 	for x, row in enumerate(puzzle_info):
 		for y, cell in enumerate(row):
 			if cell == '':
 				puzzle_info[x][y] = 0
 			else:
-				puzzle_info[x][y] = int(cell)
-				preset_list.append((x,y))
+				try:
+					cell_num = int(cell)
+					if cell_num < 10 and cell_num > 0:
+						puzzle_info[x][y] = cell_num
+						preset_list.append((x,y))
+					else:
+						print('Number outside 1-9 in puzzle file')
+						return None
+				except ValueError as err:
+					print('Non-number in puzzle, error: ', err)
+					return None
 
 	return puzzle_info
 
@@ -51,9 +67,9 @@ def check_preset_value(preset_list, x_pos, y_pos):
 #Check row, column and block
 def check_valid(puzzle_info, preset_list, x_pos, y_pos):
 	#Check preset value
-	preset = check_preset_value(preset_list, x_pos, y_pos)
-	if preset:
-		return False
+	# preset = check_preset_value(preset_list, x_pos, y_pos)
+	# if preset:
+	# 	return False
 	#Check current row
 	for x, cell in enumerate(puzzle_info[x_pos]):
 		if cell == puzzle_info[x_pos][y_pos] and x != y_pos:
@@ -119,7 +135,7 @@ def back_tracing_alg(puzzle_info, preset_list):
 	current_x = 0
 	current_y = 0
 
-	#NOTE: Handle first values if preset
+	#Loop until puzzle solved
 	while not solved:
 		increment = False
 		#Check to see if current value is a preset value
@@ -141,12 +157,15 @@ def back_tracing_alg(puzzle_info, preset_list):
 			current_y = coords[1]
 			if current_x < 0:
 				print('Cannot be solved')
+				break
 
 preset_list = []
 #Read info from csv
 puzzle_info = read_puzzle('Puzzle1.csv', preset_list)
-#Run file thorugh backtracing alg
-back_tracing_alg(puzzle_info, preset_list)
-#Output solved file
-for row in puzzle_info:
-	print(row)
+#Make sure puzzle has info from reader
+if puzzle_info:
+	#Run file thorugh backtracing alg
+	back_tracing_alg(puzzle_info, preset_list)
+	#Output solved file
+	for row in puzzle_info:
+		print(row)
